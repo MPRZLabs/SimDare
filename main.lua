@@ -18,7 +18,7 @@ function love.load()
     love.audio.newSource("food.ogg", "stream")
   }
   sounds[1]:setLooping(true)
-  sounds[1]:setVolume(0.5)
+  sounds[1]:setVolume(0.3)
   sounds[2]:setLooping(true)
   sounds[3]:setLooping(true)
   sounds[4]:setLooping(true)
