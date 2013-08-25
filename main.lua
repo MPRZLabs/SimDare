@@ -17,8 +17,8 @@ function love.load()
   timer = 48*60*60
   hours = 48
   minutes = 0
-  food = 0.75
-  hydration = 0.75
+  food = 0.15
+  hydration = 0.15
   conscience = 1
   overburn = 0
   sleep = 0.75
@@ -42,9 +42,9 @@ function love.update(dt)
     elseif food < 0.01*dt then
       food = 0
     end
-    if hydration > 0.01*dt then
-      hydration = hydration - 0.01*dt
-    elseif hydration < 0.01*dt then
+    if hydration > 0.015*dt then
+      hydration = hydration - 0.015*dt
+    elseif hydration < 0.015*dt then
       hydration = 0      
     end
     if occupation == 3 and sleep < 1 then
@@ -81,6 +81,28 @@ function love.update(dt)
 	elseif overburn < 0.02*dt then
 	  overburn = 0
 	end
+      end
+    elseif occupation == 4 then
+      if task == 2 then
+	if food < 1 and food + 0.2*dt <= 1 then
+	  food = food + 0.2*dt
+	elseif food + 0.2*dt > 1 then
+	  food = 1
+	end
+	if hydration < 1 and hydration + 0.4*dt <= 1 then
+	  hydration = hydration + 0.4*dt
+	elseif hydration + 0.4*dt > 1 then
+	  hydration = 1
+	end
+      elseif task == 1 then
+	-- TODO
+      end
+    end
+    if occupation > 1 then
+      if overburn > 0 and overburn - 0.01*dt >= 0 then
+	overburn = overburn - 0.01*dt
+      elseif overburn < 0.01*dt then
+	overburn = 0
       end
     end
     hours = math.floor(timer/3600)
@@ -164,12 +186,6 @@ function love.draw()
     love.graphics.setColor(200,200,200,255)
   end
   love.graphics.draw(sprites[4], 220, 300, math.rad(-70), 5)
-  if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
-    love.graphics.setColor(255,255,255,255)
-  else
-    love.graphics.setColor(200,200,200,255)
-  end
-  love.graphics.draw(sprites[5], 533, 348, 0, 4, 4)
   stability = math.min(conscience, food, hydration, (1 - overburn), sleep)*255
   love.graphics.setColor(stability,stability,stability,255)
   if occupation == 3 then
@@ -178,7 +194,16 @@ function love.draw()
     love.graphics.draw(sprites[1], -100, -100, 0, 4, 4)
   elseif occupation == 1 then
     love.graphics.draw(sprites[1], 543, 226, 0, 4, 4)
+  elseif occupation == 4 then
+    love.graphics.draw(sprites[1], 543, 348, math.rad(30), 4, 4)
   end
+  if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
+    love.graphics.setColor(255,255,255,255)
+  else
+    love.graphics.setColor(200,200,200,255)
+  end
+  love.graphics.draw(sprites[5], 533, 348, 0, 4, 4)
+  love.graphics.setColor(255, 255, 255, 255)
   gui.core.draw()
 end
 
@@ -202,6 +227,10 @@ function love.mousereleased(x, y,  button)
     if x >= 333 and x <= 421 and y >= 0 and y <= 144 then
       occupation = 2
       task = 1
+    end
+    if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
+      occupation = 4
+      task = 2
     end
   elseif button == "m" then
     print(x .. " " .. y)
