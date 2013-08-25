@@ -1,3 +1,4 @@
+gui = require "lib.Quickie"
 arc_root = "lib/Navi/"
 arc_path = arc_root .. "arc/"
 require(arc_path.. "arc")
@@ -15,23 +16,25 @@ function love.load()
     [20] = love.graphics.newFont(20)
   }
   occupation = 3
+  timer = 48*60*60
   love.graphics.setFont(fonts[12])
 end
 
 function love.update(dt)
   arc.check_keys(dt)
-  
+  timer = timer - 5*dt
 end
 
 function love.draw()
   arc.clear_key()
+  gui.core.draw()
   love.graphics.draw(sprites[3], 0, 0)
   love.graphics.draw(sprites[2], 571, 238, 0, 4, 4, 8, 12)
   love.graphics.draw(sprites[4], 220, 300, math.rad(-70), 5)
   if occupation == 3 then
     love.graphics.draw(sprites[1], 270, 200, math.rad(20), 4)
   elseif occupation == 2 then
-    love.graphics.draw(sprites[1], -10, -10, 0, 4, 4)
+    love.graphics.draw(sprites[1], -100, -100, 0, 4, 4)
   elseif occupation == 1 then
     love.graphics.draw(sprites[1], 543, 226, 0, 4, 4)
   end
