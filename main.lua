@@ -11,6 +11,18 @@ function love.load()
     love.graphics.newImage("doorod.png"),
     love.graphics.newImage("dooron.png")
   }
+  sounds = {
+    love.audio.newSource("track.ogg","stream"),
+    love.audio.newSource("keys.ogg", "stream"),
+    love.audio.newSource("sleep.ogg", "stream"),
+    love.audio.newSource("food.ogg", "stream")
+  }
+  sounds[1]:setLooping(true)
+  sounds[1]:setVolume(0.5)
+  sounds[2]:setLooping(true)
+  sounds[3]:setLooping(true)
+  sounds[4]:setLooping(true)
+  love.audio.play(sounds[1])
   occupation = 0
   timer = 48*60*60
   hours = 48
@@ -250,6 +262,7 @@ function love.keypressed(k, unicode)
   elseif k == " " and gamedone < 0 then
     gamedone = 0
     occupation = 3
+    love.audio.play(sounds[3])
   end
 end
 
@@ -258,15 +271,27 @@ function love.mousereleased(x, y,  button)
     if button == "l" then
       if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
 	occupation = 3
+	love.audio.pause(sounds[2])
+	love.audio.play(sounds[3])
+	love.audio.pause(sounds[4])
       end
       if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
 	occupation = 1
+	love.audio.play(sounds[2])
+	love.audio.pause(sounds[3])
+	love.audio.pause(sounds[4])
       end
       if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
 	occupation = 2
+	love.audio.pause(sounds[2])
+	love.audio.pause(sounds[3])
+	love.audio.pause(sounds[4])
       end
       if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
 	occupation = 4
+	love.audio.pause(sounds[2])
+	love.audio.pause(sounds[3])
+	love.audio.play(sounds[4])
       end
     elseif button == "m" then
       print(x .. " " .. y)
