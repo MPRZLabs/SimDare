@@ -76,8 +76,8 @@ function love.update(dt)
 	  sleep = 1
 	end
       elseif occupation == 2 then
-	if conscience < 1 and conscience + 0.01*dt <= 1 then
-	  conscience = conscience + 0.01*dt
+	if conscience < 1 and conscience + 0.015*dt <= 1 then
+	  conscience = conscience + 0.015*dt
 	end
 	if overburn > 0 and overburn - 0.03*dt >= 0 then
 	  overburn = overburn - 0.03*dt
@@ -247,20 +247,22 @@ function love.keypressed(k, unicode)
 end
 
 function love.mousereleased(x, y,  button)
-  if button == "l" then
-    if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
-      occupation = 3
+  if gamedone >= 0 then
+    if button == "l" then
+      if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
+	occupation = 3
+      end
+      if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
+	occupation = 1
+      end
+      if x >= 333 and x <= 421 and y >= 0 and y <= 144 then
+	occupation = 2
+      end
+      if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
+	occupation = 4
+      end
+    elseif button == "m" then
+      print(x .. " " .. y)
     end
-    if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
-      occupation = 1
-    end
-    if x >= 333 and x <= 421 and y >= 0 and y <= 144 then
-      occupation = 2
-    end
-    if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
-      occupation = 4
-    end
-  elseif button == "m" then
-    print(x .. " " .. y)
   end
 end
