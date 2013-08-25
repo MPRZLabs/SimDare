@@ -6,7 +6,10 @@ function love.load()
     love.graphics.newImage("computer.png"),
     love.graphics.newImage("room.png"),
     love.graphics.newImage("bed.png"),
-    love.graphics.newImage("fridge.png")
+    love.graphics.newImage("fridge.png"),
+    love.graphics.newImage("doorc.png"),
+    love.graphics.newImage("doorod.png"),
+    love.graphics.newImage("dooron.png")
   }
   occupation = 0
   timer = 48*60*60
@@ -171,7 +174,7 @@ function love.update(dt)
     if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
       gui.Label{text = "Computer", pos = {600, 100}, size = {100}}
     end
-    if x >= 333 and x <= 421 and y >= 0 and y <= 144 then
+    if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
       gui.Label{text = "Outside", pos = {600, 100}, size = {100}}
     end
     if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
@@ -196,13 +199,6 @@ end
 
 function love.draw()
   local x, y = love.mouse.getPosition()
-  if x >= 333 and x <= 421 and y >= 0 and y <= 144 then
-    love.graphics.setColor(180, 180, 180, 180)
-  else
-    love.graphics.setColor(120, 120, 120, 120)
-  end
-  love.graphics.rectangle("fill", 300, 0, 150, 144)
-  love.graphics.setColor(255,255,255,255)
   love.graphics.draw(sprites[3], 0, 0)
   if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
     love.graphics.setColor(180, 180, 180, 180)
@@ -210,6 +206,17 @@ function love.draw()
     love.graphics.setColor(120, 120, 120, 120)
   end
   love.graphics.draw(sprites[2], 571, 238, 0, 4, 4, 8, 12)
+  love.graphics.setColor(255,255,255,255)
+  if hours % 24 < 12 then
+    door = sprites[7]
+  else
+    door = sprites[8]
+  end
+  if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
+    love.graphics.draw(door, 335, 1, 0, 4, 4)
+  else
+    love.graphics.draw(sprites[6], 335, 1, 0, 4, 4)
+  end
   if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
     love.graphics.setColor(255,255,255,255)
   else
@@ -255,7 +262,7 @@ function love.mousereleased(x, y,  button)
       if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
 	occupation = 1
       end
-      if x >= 333 and x <= 421 and y >= 0 and y <= 144 then
+      if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
 	occupation = 2
       end
       if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
