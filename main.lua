@@ -9,7 +9,6 @@ function love.load()
     love.graphics.newImage("fridge.png")
   }
   occupation = 3
-  task = 2
   timer = 48*60*60
   hours = 48
   minutes = 0
@@ -50,59 +49,42 @@ function love.update(dt)
       elseif hydration < 0.015*dt then
 	hydration = 0      
       end
-      if occupation == 3 and sleep < 1 then
-	if task == 2 then
-	  sleep = sleep + 0.03*dt
-	elseif task == 1 then
-	  sleep = sleep + 0.02*dt
-	end
+      if occupation == 3 then
+	sleep = sleep + 0.03*dt
 	if sleep > 1 then
 	  sleep = 1
 	end
       elseif occupation == 2 then
-	if task == 2 then
-	  if conscience < 1 and conscience + 0.01*dt <= 1 then
-	    conscience = conscience + 0.01*dt
-	  end
-	elseif task == 1 then
-	  if overburn > 0 and overburn - 0.03*dt >= 0 then
-	    overburn = overburn - 0.03*dt
-	  elseif overburn < 0.03*dt then
-	    overburn = 0
-	  end
+	if conscience < 1 and conscience + 0.01*dt <= 1 then
+	  conscience = conscience + 0.01*dt
+	end
+	if overburn > 0 and overburn - 0.03*dt >= 0 then
+	  overburn = overburn - 0.03*dt
+	elseif overburn < 0.03*dt then
+	  overburn = 0
 	end
       elseif occupation == 1 then
-	if task == 2 then
-	  if overburn < 1 and overburn + 0.01*dt <= 1 then
-	    overburn = overburn + 0.01*dt
-	  elseif overburn + 0.01*dt > 1 then
-	    overburn = 1
-	  end
-	  local stability = math.min(conscience, food, hydration, (1 - overburn), sleep)
-	  if gamedone < 1 and gamedone + 0.01*dt*stability <=1 then
-	    gamedone = gamedone + 0.01*dt*stability
-	  elseif gamedone + 0.01*dt*stability > 1 then
-	    gamedone = 1
-	  end
-	elseif task == 1 then
-	  if overburn > 0 and overburn - 0.02*dt >= 0 then
-	    overburn = overburn - 0.02*dt
-	  elseif overburn < 0.02*dt then
-	    overburn = 0
-	  end
+	if overburn < 1 and overburn + 0.01*dt <= 1 then
+	  overburn = overburn + 0.01*dt
+	elseif overburn + 0.01*dt > 1 then
+	  overburn = 1
+	end
+	local stability = math.min(conscience, food, hydration, (1 - overburn), sleep)
+	if gamedone < 1 and gamedone + 0.01*dt*stability <=1 then
+	  gamedone = gamedone + 0.01*dt*stability
+	elseif gamedone + 0.01*dt*stability > 1 then
+	  gamedone = 1
 	end
       elseif occupation == 4 then
-	if task == 2 then
-	  if food < 1 and food + 0.2*dt <= 1 then
-	    food = food + 0.2*dt
-	  elseif food + 0.2*dt > 1 then
-	    food = 1
-	  end
-	  if hydration < 1 and hydration + 0.4*dt <= 1 then
-	    hydration = hydration + 0.4*dt
-	  elseif hydration + 0.4*dt > 1 then
-	    hydration = 1
-	  end
+	if food < 1 and food + 0.2*dt <= 1 then
+	  food = food + 0.2*dt
+	elseif food + 0.2*dt > 1 then
+	  food = 1
+	end
+	if hydration < 1 and hydration + 0.4*dt <= 1 then
+	  hydration = hydration + 0.4*dt
+	elseif hydration + 0.4*dt > 1 then
+	  hydration = 1
 	end
       end
       if occupation > 1 then
@@ -244,19 +226,15 @@ function love.mousereleased(x, y,  button)
   if button == "l" then
     if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
       occupation = 3
-      task = 2
     end
     if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
       occupation = 1
-      task = 2
     end
     if x >= 333 and x <= 421 and y >= 0 and y <= 144 then
       occupation = 2
-      task = 1
     end
     if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
       occupation = 4
-      task = 2
     end
   elseif button == "m" then
     print(x .. " " .. y)
