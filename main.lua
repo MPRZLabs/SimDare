@@ -65,6 +65,11 @@ function love.update(dt)
       elseif hydration < 0.015*dt then
 	hydration = 0      
       end
+      if conscience > 0.005*dt then
+	conscience = conscience - 0.005*dt
+      elseif conscience < 0.005*dt then
+	conscience = 0
+      end
       if occupation == 3 then
 	sleep = sleep + 0.03*dt
 	if sleep > 1 then
