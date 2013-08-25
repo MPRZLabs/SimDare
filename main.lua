@@ -1,8 +1,4 @@
 gui = require "lib.Quickie"
-arc_root = "lib/Navi/"
-arc_path = arc_root .. "arc/"
-require(arc_path.. "arc")
-_navi = require(arc_path .. "navi")
 
 function love.load()
   sprites = {
@@ -22,6 +18,7 @@ function love.load()
   conscience = 1
   overburn = 0
   sleep = 0.75
+  gamedone = 0
   gui.mouse.disable()
   love.graphics.setNewFont(15)
   love.graphics.setBackgroundColor(255, 255, 255, 255)
@@ -29,7 +26,6 @@ function love.load()
 end
 
 function love.update(dt)
-  arc.check_keys(dt)
   if performGameUpdate then
     timer = timer - 8*60*dt
     if sleep > 0.01*dt then
@@ -75,6 +71,12 @@ function love.update(dt)
 	elseif overburn + 0.01*dt > 1 then
 	  overburn = 1
 	end
+	local stability = math.min(conscience, food, hydration, (1 - overburn), sleep)
+	if gamedone < 1 and gamedone + 0.01*dt*stability <=1 then
+	  gamedone = gamedone + 0.01*dt*stability
+	elseif gamedone + 0.01*dt*stability > 1 then
+	  gamedone = 1
+	end
       elseif task == 1 then
 	if overburn > 0 and overburn - 0.02*dt >= 0 then
 	  overburn = overburn - 0.02*dt
@@ -94,8 +96,6 @@ function love.update(dt)
 	elseif hydration + 0.4*dt > 1 then
 	  hydration = 1
 	end
-      elseif task == 1 then
-	-- TODO
       end
     end
     if occupation > 1 then
@@ -143,6 +143,10 @@ function love.update(dt)
       gui.Slider{info = {value = sleep}}
     end}
   end}
+  gui.group{grow = "down", pos = {380, 530}, function()
+    gui.Label{text = "progress", size= {100}}
+    gui.Slider{info = {value = gamedone}, size = {400}}
+  end}
   x, y = love.mouse.getPosition()
   if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
     gui.Label{text = "Bed", pos = {600, 100}, size = {100}}
@@ -164,8 +168,7 @@ end
 
 
 function love.draw()
-  arc.clear_key()
-  x, y = love.mouse.getPosition()
+  local x, y = love.mouse.getPosition()
   if x >= 333 and x <= 421 and y >= 0 and y <= 144 then
     love.graphics.setColor(180, 180, 180, 180)
   else
@@ -186,8 +189,8 @@ function love.draw()
     love.graphics.setColor(200,200,200,255)
   end
   love.graphics.draw(sprites[4], 220, 300, math.rad(-70), 5)
-  stability = math.min(conscience, food, hydration, (1 - overburn), sleep)*255
-  love.graphics.setColor(stability,stability,stability,255)
+  local colorstability = math.min(conscience, food, hydration, (1 - overburn), sleep)*255
+  love.graphics.setColor(colorstability,colorstability,colorstability,255)
   if occupation == 3 then
     love.graphics.draw(sprites[1], 270, 200, math.rad(20), 4)
   elseif occupation == 2 then
@@ -208,7 +211,6 @@ function love.draw()
 end
 
 function love.keypressed(k, unicode)
-  arc.set_key(k)
   if k == "escape" then
     love.event.push('quit')
   end
