@@ -1,6 +1,3 @@
-[submodule "lib/Navi"]
-	path = lib/Navi
-	url = https://bitbucket.org/michcioperz/Navi.git
 [submodule "lib/Quickie"]
 	path = lib/Quickie
 	url = https://github.com/vrld/Quickie.git
