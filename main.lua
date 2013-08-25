@@ -8,7 +8,7 @@ function love.load()
     love.graphics.newImage("bed.png"),
     love.graphics.newImage("fridge.png")
   }
-  occupation = 3
+  occupation = 0
   timer = 48*60*60
   hours = 48
   minutes = 0
@@ -17,18 +17,34 @@ function love.load()
   conscience = 1
   overburn = 0
   sleep = 0.75
-  gamedone = 0
+  gamedone = -1
   gui.mouse.disable()
   fonts = {
     [15] = love.graphics.newFont(15),
     [40] = love.graphics.newFont(40)
   }
   love.graphics.setBackgroundColor(255, 255, 255, 255)
+  spacecounter = 0
   performGameUpdate = true
 end
 
 function love.update(dt)
-  if gamedone < 1 then
+  if gamedone < 0 then
+    gui.group{grow = "down", pos = {480, 50}, function()
+      love.graphics.setFont(fonts[40])
+      gui.Label{text = "SimDare"}
+      love.graphics.setFont(fonts[15])
+      gui.Label{text = "Ludum Dare compo simulation game"}
+    end}
+    gui.group{grow = "down", pos = {100, 500}, function()
+            gui.Label{text = "press space to reveal the theme"}
+      gui.Label{text = "you have 10 seconds to start"}
+    end}
+    spacecounter = spacecounter + dt
+    if spacecounter >= 10 then
+      love.event.push("quit")
+    end
+  elseif gamedone < 1 then
     if performGameUpdate then
       timer = timer - 8*60*dt
       if timer <= 0 then
@@ -219,6 +235,9 @@ end
 function love.keypressed(k, unicode)
   if k == "escape" then
     love.event.push('quit')
+  elseif k == " " and gamedone < 0 then
+    gamedone = 0
+    occupation = 3
   end
 end
 
