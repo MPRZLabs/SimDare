@@ -76,8 +76,8 @@ function love.update(dt)
 	  sleep = 1
 	end
       elseif occupation == 2 then
-	if conscience < 1 and conscience + 0.015*dt <= 1 then
-	  conscience = conscience + 0.015*dt
+	if conscience < 1 and conscience + 0.03*dt <= 1 then
+	  conscience = conscience + 0.03*dt
 	end
 	if overburn > 0 and overburn - 0.03*dt >= 0 then
 	  overburn = overburn - 0.03*dt
