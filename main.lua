@@ -175,9 +175,9 @@ function love.update(dt)
       gui.Label{text = "Fridge", pos = {600, 100}, size = {100}}
     end
   else
-      love.graphics.setFont(fonts[40])
-      gui.Label{text = "You made it!", pos = {480, 50}}
-      love.graphics.setFont(fonts[15])
+    love.graphics.setFont(fonts[40])
+    gui.Label{text = "You made it!", pos = {480, 50}}
+    love.graphics.setFont(fonts[15])
     gui.group{grow = "down", pos = {100, 500}, function()
       gui.Label{text = "you just won SimDare, Michcioperz's 1st Ludum entry he's proud of"}
       gui.Label{text = "Michcioperz would love to hear your feedback on Twitter"}
