@@ -226,6 +226,9 @@ function love.draw()
   end
   if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
     love.graphics.draw(door, 335, 1, 0, 4, 4)
+    if occupation == 2 then
+      love.graphics.draw(sprites[1], 380, 20, 0, 4, 4)
+    end
   else
     love.graphics.draw(sprites[6], 335, 1, 0, 4, 4)
   end
@@ -239,8 +242,6 @@ function love.draw()
   love.graphics.setColor(colorstability,colorstability,colorstability,255)
   if occupation == 3 then
     love.graphics.draw(sprites[1], 270, 200, math.rad(20), 4)
-  elseif occupation == 2 then
-    love.graphics.draw(sprites[1], -100, -100, 0, 4, 4)
   elseif occupation == 1 then
     love.graphics.draw(sprites[1], 543, 226, 0, 4, 4)
   elseif occupation == 4 then
