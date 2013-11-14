@@ -9,6 +9,7 @@ function love.load()
     love.graphics.newImage("doorod.png"),
     love.graphics.newImage("dooron.png")
   }
+  rainbowsy = love.image.newImageData("rainbow.png")
   sounds = {
     love.audio.newSource("track.ogg","stream"),
     love.audio.newSource("keys.ogg", "stream"),
@@ -35,6 +36,9 @@ function love.load()
   clockr = 0
   clockg = 0
   clockb = 0
+  clockx = math.random(0, 799)
+  clocky = math.random(0, 599)
+  rainbowmode = false
   getFont(15)
   getFont(18)
   getFont(40)
@@ -209,13 +213,69 @@ end
 
 function drawClock()
   switchFont(40)
-  if math.random(0, 100) == 5 then
-    clockr = math.random(0,255)
-    clockg = math.random(0,255)
-    clockb = math.random(0,255)
+  local unchanged = true
+  while unchanged do
+    local dir = math.random(0,7)
+    if dir == 0 then
+      if clockx + 1 <= 799 then
+	clockx = clockx + 1
+	unchanged = false
+      else
+	clockx = 799
+      end
+    elseif dir == 1 then
+      if clocky + 1 <= 599 then
+	clocky = clocky + 1
+	unchanged = false
+      else
+	clockx = 599
+      end
+    elseif dir == 2 then
+      if clockx - 1 >= 0 then
+	clockx = clockx - 1
+	unchanged = false
+      else
+	clockx = 0
+      end
+    elseif dir == 3 then
+      if clocky - 1 >= 0 then
+	clocky = clocky - 1
+	unchanged = false
+      else
+	clocky = 0
+      end
+    elseif dir == 4 then
+      if clockx + 10 <= 799 then
+	clockx = clockx + 10
+	unchanged = false
+      else
+	clockx = 799
+      end
+    elseif dir == 5 then
+      if clocky + 10 <= 599 then
+	clocky = clocky + 10
+	unchanged = false
+      else
+	clocky = 599
+      end
+    elseif dir == 6 then
+      if clockx - 10 >= 0 then
+	clockx = clockx - 10
+	unchanged = false
+      else
+	clockx = 0
+      end
+    elseif dir == 7 then
+      if clocky - 10 >= 0 then
+	clocky = clocky - 10
+	unchanged = false
+      else
+	clocky = 0
+      end
+    end
+    print(dir .. " " .. clockx .. " " .. clocky)
   end
-  love.graphics.setColor(clockr, clockg, clockb, 255)
-  love.graphics.rectangle("fill", 50, 50, 115, 50)
+  clockr, clockg, clockb = rainbowsy:getPixel(clockx, clocky)
   love.graphics.setColor(255-clockr,255-clockg,255-clockb,255)
   love.graphics.printf(numToStr(hours) .. ":" .. numToStr(minutes), 50, 50, 115)
 end
@@ -253,6 +313,11 @@ end
 function love.draw()
   local x, y = love.mouse.getPosition()
   local colorstability = math.min(conscience, food, hydration, (1 - overburn), sleep)*255
+  if rainbowmode then
+    love.graphics.setColor(clockr, clockg, clockb, 255)
+  else
+    love.graphics.setColor(0,0,0,255)
+  end
   love.graphics.draw(sprites[3], 0, 0)
   if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
     love.graphics.setColor(180, 180, 180, 180)
@@ -304,10 +369,11 @@ function love.draw()
   drawProgress()
 end
 
-function love.keypressed(k, unicode)
+function love.keypressed(k)
   if k == "escape" then
     love.event.push('quit')
-  elseif k == " " and gamedone < 0 then
+  end
+  if k == " " and gamedone < 0 then
     gamedone = 0
     occupation = 3
     love.audio.play(sounds[3])
@@ -345,5 +411,10 @@ function love.mousereleased(x, y,  button)
   end
   if button == "m" then
     print(x .. " " .. y)
+    if rainbowmode then
+      rainbowmode = false
+    else
+      rainbowmode = true
+    end
   end
 end
