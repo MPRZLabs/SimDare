@@ -27,6 +27,7 @@ function love.load()
   timer = 48*60*60
   hours = 48
   minutes = 0
+  lastminute = minutes
   food = 0.15
   hydration = 0.15
   conscience = 1
@@ -36,6 +37,7 @@ function love.load()
   clockr = 0
   clockg = 0
   clockb = 0
+  fortunemod = {"You can do it!","Yay! You're making a game in a game!", "A few more (tens of) hours, and it will be done!","Code monkey get up, get coffee. Code monkey go to job"}
   math.randomseed(math.random(1,456))
   math.randomseed(math.random(1,456))
   math.randomseed(math.random(1,456))
@@ -43,6 +45,7 @@ function love.load()
   clocky = math.random(0, 599)
   clockx = math.random(0, 799)
   clocky = math.random(0, 599)
+  progressland = fortunemod[math.random(1,3)]
   rainbowmode = 0
   getFont(15)
   getFont(18)
@@ -143,6 +146,10 @@ function love.update(dt)
       end
       hours = math.floor(timer/3600)
       minutes = math.floor((timer%3600)/60)
+      if minutes%10 == 0 and (lastminute > minutes or lastminute < minutes) then
+	progressland = fortunemod[math.random(1,3)]
+	lastminute = minutes
+      end
     else
       love.audio.stop()
     end
@@ -199,6 +206,12 @@ function drawProgress()
     love.graphics.rectangle("fill", 200, 500, 400 * gamedone, 30)
     love.graphics.setColor(255,0,0,255)
     love.graphics.rectangle("fill", 200 + 400*gamedone, 500, 400 * (1-gamedone), 30)
+    if rainbowmode > 0 then
+      love.graphics.setColor(1-clockr, 1-clockg, 1-clockb, 255)
+    else
+      love.graphics.setColor(0,0,0,255)
+    end
+    love.graphics.printf(progressland, 200, 500, 400, "center")
   end
 end
 
