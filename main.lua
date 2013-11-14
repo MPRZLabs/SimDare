@@ -36,9 +36,14 @@ function love.load()
   clockr = 0
   clockg = 0
   clockb = 0
+  math.randomseed(math.random(1,456))
+  math.randomseed(math.random(1,456))
+  math.randomseed(math.random(1,456))
   clockx = math.random(0, 799)
   clocky = math.random(0, 599)
-  rainbowmode = false
+  clockx = math.random(0, 799)
+  clocky = math.random(0, 599)
+  rainbowmode = 0
   getFont(15)
   getFont(18)
   getFont(40)
@@ -174,7 +179,7 @@ function drawNeeds()
     love.graphics.rectangle("fill", (1-conscience)*100, 325, conscience*100, 50)
     love.graphics.rectangle("fill", overburn*100, 425, (1-overburn)*100, 50)
     love.graphics.rectangle("fill", (1-sleep)*100, 525, sleep*100, 50)
-    if rainbowmode then
+    if rainbowmode > 0 then
       love.graphics.setColor(clockr, clockg, clockb, 255)
     else
       love.graphics.setColor(0,0,0,255)
@@ -198,7 +203,7 @@ function drawProgress()
 end
 
 function drawTips()
-  if rainbowmode then
+  if rainbowmode > 0 then
     love.graphics.setColor(1-clockr, 1-clockg, 1-clockb, 255)
   else
     love.graphics.setColor(0,0,0,255)
@@ -221,67 +226,71 @@ end
 
 function drawClock()
   switchFont(40)
-  local unchanged = true
-  while unchanged do
-    local dir = math.random(0,7)
-    if dir == 0 then
-      if clockx + 1 <= 799 then
-	clockx = clockx + 1
-	unchanged = false
-      else
-	clockx = 799
+  if rainbowmode == 1 then
+    local unchanged = true
+    while unchanged do
+      local dir = math.random(0,7)
+      if dir == 0 then
+	if clockx + 1 <= 799 then
+	  clockx = clockx + 1
+	  unchanged = false
+	else
+	  clockx = 799
+	end
+      elseif dir == 1 then
+	if clocky + 1 <= 599 then
+	  clocky = clocky + 1
+	  unchanged = false
+	else
+	  clockx = 599
+	end
+      elseif dir == 2 then
+	if clockx - 1 >= 0 then
+	  clockx = clockx - 1
+	  unchanged = false
+	else
+	  clockx = 0
+	end
+      elseif dir == 3 then
+	if clocky - 1 >= 0 then
+	  clocky = clocky - 1
+	  unchanged = false
+	else
+	  clocky = 0
+	end
+      elseif dir == 4 then
+	if clockx + 10 <= 799 then
+	  clockx = clockx + 10
+	  unchanged = false
+	else
+	  clockx = 799
+	end
+      elseif dir == 5 then
+	if clocky + 10 <= 599 then
+	  clocky = clocky + 10
+	  unchanged = false
+	else
+	  clocky = 599
+	end
+      elseif dir == 6 then
+	if clockx - 10 >= 0 then
+	  clockx = clockx - 10
+	  unchanged = false
+	else
+	  clockx = 0
+	end
+      elseif dir == 7 then
+	if clocky - 10 >= 0 then
+	  clocky = clocky - 10
+	  unchanged = false
+	else
+	  clocky = 0
+	end
       end
-    elseif dir == 1 then
-      if clocky + 1 <= 599 then
-	clocky = clocky + 1
-	unchanged = false
-      else
-	clockx = 599
-      end
-    elseif dir == 2 then
-      if clockx - 1 >= 0 then
-	clockx = clockx - 1
-	unchanged = false
-      else
-	clockx = 0
-      end
-    elseif dir == 3 then
-      if clocky - 1 >= 0 then
-	clocky = clocky - 1
-	unchanged = false
-      else
-	clocky = 0
-      end
-    elseif dir == 4 then
-      if clockx + 10 <= 799 then
-	clockx = clockx + 10
-	unchanged = false
-      else
-	clockx = 799
-      end
-    elseif dir == 5 then
-      if clocky + 10 <= 599 then
-	clocky = clocky + 10
-	unchanged = false
-      else
-	clocky = 599
-      end
-    elseif dir == 6 then
-      if clockx - 10 >= 0 then
-	clockx = clockx - 10
-	unchanged = false
-      else
-	clockx = 0
-      end
-    elseif dir == 7 then
-      if clocky - 10 >= 0 then
-	clocky = clocky - 10
-	unchanged = false
-      else
-	clocky = 0
-      end
+      print(dir .. " " .. clockx .. " " .. clocky)
     end
-    print(dir .. " " .. clockx .. " " .. clocky)
+  elseif rainbowmode == 2 then
+    clockx, clocky = love.mouse.getPosition()
   end
   clockr, clockg, clockb = rainbowsy:getPixel(clockx, clocky)
   love.graphics.setColor(255-clockr,255-clockg,255-clockb,255)
@@ -289,7 +298,7 @@ function drawClock()
 end
   
 function drawSpeech()
-  if rainbowmode then
+  if rainbowmode > 0 then
     love.graphics.setColor(1-clockr, 1-clockg, 1-clockb, 255)
   else
     love.graphics.setColor(255,255,255,255)
@@ -326,7 +335,7 @@ end
 function love.draw()
   local x, y = love.mouse.getPosition()
   local colorstability = math.min(conscience, food, hydration, (1 - overburn), sleep)*255
-  if rainbowmode then
+  if rainbowmode > 0 then
     love.graphics.setColor(clockr, clockg, clockb, 255)
   else
     love.graphics.setColor(0,0,0,255)
@@ -424,10 +433,10 @@ function love.mousereleased(x, y,  button)
   end
   if button == "m" then
     print(x .. " " .. y)
-    if rainbowmode then
-      rainbowmode = false
+    if rainbowmode < 2 then
+      rainbowmode = rainbowmode + 1
     else
-      rainbowmode = true
+      rainbowmode = 0
     end
   end
 end
