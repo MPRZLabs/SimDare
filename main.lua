@@ -29,7 +29,6 @@ function love.load()
   minutes = 0
   lastminute = minutes
   food = 0.15
-  hydration = 0.15
   conscience = 1
   overburn = 0
   sleep = 0.75
@@ -90,11 +89,6 @@ function love.update(dt)
       elseif food < 0.01*dt then
 	food = 0
       end
-      if hydration > 0.015*dt then
-	hydration = hydration - 0.015*dt
-      elseif hydration < 0.015*dt then
-	hydration = 0      
-      end
       if conscience > 0.005*dt then
 	conscience = conscience - 0.005*dt
       elseif conscience < 0.005*dt then
@@ -120,7 +114,7 @@ function love.update(dt)
 	elseif overburn + 0.01*dt > 1 then
 	  overburn = 1
 	end
-	local stability = math.min(conscience, food, hydration, (1 - overburn), sleep)
+	local stability = math.min(conscience, food, (1 - overburn), sleep)
 	if gamedone < 1 and gamedone + 0.01*dt*stability <=1 then
 	  gamedone = gamedone + 0.01*dt*stability
 	elseif gamedone + 0.01*dt*stability > 1 then
@@ -131,11 +125,6 @@ function love.update(dt)
 	  food = food + 0.2*dt
 	elseif food + 0.2*dt > 1 then
 	  food = 1
-	end
-	if hydration < 1 and hydration + 0.4*dt <= 1 then
-	  hydration = hydration + 0.4*dt
-	elseif hydration + 0.4*dt > 1 then
-	  hydration = 1
 	end
       end
       if occupation > 1 then
@@ -160,9 +149,6 @@ function love.update(dt)
     if food == 0 then
 	performGameUpdate = false
     end
-    if hydration == 0 then
-      performGameUpdate = false
-    end
     if sleep == 0 then
       performGameUpdate = false
     end
@@ -180,16 +166,14 @@ function drawNeeds()
   if gamedone < 1 and gamedone > -1 then
     love.graphics.setColor(255,0,0,255)
     love.graphics.rectangle("fill", 0, 125, (1-food)*100, 50)
-    love.graphics.rectangle("fill", 0, 225, (1-hydration)*100, 50)
-    love.graphics.rectangle("fill", 0, 325, (1-conscience)*100, 50)
-    love.graphics.rectangle("fill", 0, 425, overburn*100, 50)
-    love.graphics.rectangle("fill", 0, 525, (1-sleep)*100, 50)
+    love.graphics.rectangle("fill", 0, 225, (1-conscience)*100, 50)
+    love.graphics.rectangle("fill", 0, 325, overburn*100, 50)
+    love.graphics.rectangle("fill", 0, 425, (1-sleep)*100, 50)
     love.graphics.setColor(0,255,0,255)
     love.graphics.rectangle("fill", (1-food)*100, 125, food*100, 50)
-    love.graphics.rectangle("fill", (1-hydration)*100, 225, hydration*100, 50)
-    love.graphics.rectangle("fill", (1-conscience)*100, 325, conscience*100, 50)
-    love.graphics.rectangle("fill", overburn*100, 425, (1-overburn)*100, 50)
-    love.graphics.rectangle("fill", (1-sleep)*100, 525, sleep*100, 50)
+    love.graphics.rectangle("fill", (1-conscience)*100, 225, conscience*100, 50)
+    love.graphics.rectangle("fill", overburn*100, 325, (1-overburn)*100, 50)
+    love.graphics.rectangle("fill", (1-sleep)*100, 425, sleep*100, 50)
     if rainbowmode > 0 then
       love.graphics.setColor(clockr, clockg, clockb, 255)
     else
@@ -197,10 +181,9 @@ function drawNeeds()
     end
     switchFont(18)
     love.graphics.printf("Food", 0, 150, 100, "center")
-    love.graphics.printf("Hydration", 0, 250, 100, "center")
-    love.graphics.printf("Conscience", 0, 350, 100, "center")
-    love.graphics.printf("Overwork", 0, 450, 100, "center")
-    love.graphics.printf("Sleep", 0, 550, 100, "center")
+    love.graphics.printf("Conscience", 0, 250, 100, "center")
+    love.graphics.printf("Overwork", 0, 350, 100, "center")
+    love.graphics.printf("Sleep", 0, 450, 100, "center")
   end
 end
 
@@ -331,9 +314,6 @@ function drawSpeech()
     if food == 0 then
       love.graphics.printf("You died of hunger :(", 200, 550, 500)
     end
-    if hydration == 0 then
-      love.graphics.printf("You died of dehydration :(", 200, 550, 500)
-    end
     if sleep == 0 then
       love.graphics.printf("You fell asleep forever :(", 200, 550, 500)
     end
@@ -351,7 +331,7 @@ end
 
 function love.draw()
   local x, y = love.mouse.getPosition()
-  local colorstability = math.min(conscience, food, hydration, (1 - overburn), sleep)*255
+  local colorstability = math.min(conscience, food, (1 - overburn), sleep)*255
   if rainbowmode > 0 then
     love.graphics.setColor(clockr, clockg, clockb, 255)
   else
