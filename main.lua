@@ -1,5 +1,3 @@
-gui = require "lib.Quickie"
-
 function love.load()
   sprites = {
     love.graphics.newImage("human.png"),
@@ -17,6 +15,7 @@ function love.load()
     love.audio.newSource("sleep.ogg", "stream"),
     love.audio.newSource("food.ogg", "stream")
   }
+  fonts = { }
   sounds[1]:setLooping(true)
   sounds[1]:setVolume(0.3)
   sounds[2]:setLooping(true)
@@ -33,32 +32,32 @@ function love.load()
   overburn = 0
   sleep = 0.75
   gamedone = -1
-  gui.mouse.disable()
-  fonts = {
-    [15] = love.graphics.newFont(15),
-    [40] = love.graphics.newFont(40)
-  }
+  clockr = 0
+  clockg = 0
+  clockb = 0
+  getFont(15)
+  getFont(18)
+  getFont(40)
   love.graphics.setBackgroundColor(255, 255, 255, 255)
-  spacecounter = 0
   performGameUpdate = true
+end
+
+function getFont(size)
+  if fonts[size] then
+    
+  else
+    fonts[size] = love.graphics.newFont(size)
+  end
+  return fonts[size]
+end
+
+function switchFont(size)
+  love.graphics.setFont(getFont(size))
 end
 
 function love.update(dt)
   if gamedone < 0 then
-    gui.group{grow = "down", pos = {480, 50}, function()
-      love.graphics.setFont(fonts[40])
-      gui.Label{text = "SimDare"}
-      love.graphics.setFont(fonts[15])
-      gui.Label{text = "Ludum Dare compo simulation game"}
-    end}
-    gui.group{grow = "down", pos = {100, 500}, function()
-            gui.Label{text = "press space to reveal the theme"}
-      gui.Label{text = "you have 10 seconds to start"}
-    end}
-    spacecounter = spacecounter + dt
-    if spacecounter >= 10 then
-      love.event.push("quit")
-    end
+    
   elseif gamedone < 1 then
     if performGameUpdate then
       timer = timer - 8*60*dt
@@ -135,72 +134,21 @@ function love.update(dt)
       end
       hours = math.floor(timer/3600)
       minutes = math.floor((timer%3600)/60)
+    else
+      love.audio.stop()
     end
     if food == 0 then
 	performGameUpdate = false
-	gui.Label{text = "You died of hunger", pos = {100, 500}, size = {100}}
     end
     if hydration == 0 then
       performGameUpdate = false
-      gui.Label{text = "You died of dehydration", pos = {100, 525}, size = {100}}
     end
     if sleep == 0 then
       performGameUpdate = false
-      gui.Label{text = "You fell asleep forever", pos = {100, 550}, size = {100}}
     end
     if timer <= 0 then
       performGameUpdate = false
-      gui.Label{text = "You didn't make a game in time :(", pos = {100, 475}, size = {100}}
     end
-    gui.Label{text = numToStr(hours) .. ":" .. numToStr(minutes), pos = {100, 100}}
-    gui.group{grow = "down", pos = {0, 200}, function()
-      gui.group{grow = "right", function()
-	gui.Label{text = "food", size = {100}}
-	gui.Slider{info = {value = food}}
-      end}
-      gui.group{grow = "right", function()
-	gui.Label{text = "hydration", size = {100}}
-	gui.Slider{info = {value = hydration}}
-      end}
-      gui.group{grow = "right", function()
-	gui.Label{text = "conscience", size = {100}}
-	gui.Slider{info = {value = conscience}}
-      end}
-      gui.group{grow = "right", function()
-	gui.Label{text = "overburn", size = {100}}
-	gui.Slider{info = {value = overburn}}
-      end}
-      gui.group{grow = "right", function()
-	gui.Label{text = "sleep", size = {100}}
-	gui.Slider{info = {value = sleep}}
-      end}
-    end}
-    gui.group{grow = "down", pos = {380, 530}, function()
-      gui.Label{text = "progress", size= {100}}
-      gui.Slider{info = {value = gamedone}, size = {400}}
-    end}
-    x, y = love.mouse.getPosition()
-    if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
-      gui.Label{text = "Bed", pos = {600, 100}, size = {100}}
-    end
-    if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
-      gui.Label{text = "Computer", pos = {600, 100}, size = {100}}
-    end
-    if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
-      gui.Label{text = "Outside", pos = {600, 100}, size = {100}}
-    end
-    if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
-      gui.Label{text = "Fridge", pos = {600, 100}, size = {100}}
-    end
-  else
-    love.graphics.setFont(fonts[40])
-    gui.Label{text = "You made it!", pos = {480, 50}}
-    love.graphics.setFont(fonts[15])
-    gui.group{grow = "down", pos = {100, 500}, function()
-      gui.Label{text = "you just won SimDare, Michcioperz's 1st Ludum entry he's proud of"}
-      gui.Label{text = "Michcioperz would love to hear your feedback on Twitter"}
-      gui.Label{text = "thanks for playing and good luck with your Ludum"}
-    end}
   end
 end
 
@@ -208,9 +156,103 @@ function numToStr(int)
   if int < 10 then return "0"..int else return int end
 end
 
+function drawNeeds()
+  if gamedone < 1 and gamedone > -1 then
+    love.graphics.setColor(255,0,0,255)
+    love.graphics.rectangle("fill", 0, 125, (1-food)*100, 50)
+    love.graphics.rectangle("fill", 0, 225, (1-hydration)*100, 50)
+    love.graphics.rectangle("fill", 0, 325, (1-conscience)*100, 50)
+    love.graphics.rectangle("fill", 0, 425, overburn*100, 50)
+    love.graphics.rectangle("fill", 0, 525, (1-sleep)*100, 50)
+    love.graphics.setColor(0,255,0,255)
+    love.graphics.rectangle("fill", (1-food)*100, 125, food*100, 50)
+    love.graphics.rectangle("fill", (1-hydration)*100, 225, hydration*100, 50)
+    love.graphics.rectangle("fill", (1-conscience)*100, 325, conscience*100, 50)
+    love.graphics.rectangle("fill", overburn*100, 425, (1-overburn)*100, 50)
+    love.graphics.rectangle("fill", (1-sleep)*100, 525, sleep*100, 50)
+    love.graphics.setColor(0,0,0,255)
+    switchFont(18)
+    love.graphics.printf("Food", 0, 150, 100, "center")
+    love.graphics.printf("Hydration", 0, 250, 100, "center")
+    love.graphics.printf("Conscience", 0, 350, 100, "center")
+    love.graphics.printf("Overwork", 0, 450, 100, "center")
+    love.graphics.printf("Sleep", 0, 550, 100, "center")
+  end
+end
+
+function drawProgress()
+  if gamedone < 1 and gamedone > -1 then
+    love.graphics.setColor(0,255,0,255)
+    love.graphics.rectangle("fill", 200, 500, 400 * gamedone, 30)
+    love.graphics.setColor(255,0,0,255)
+    love.graphics.rectangle("fill", 200 + 400*gamedone, 500, 400 * (1-gamedone), 30)
+  end
+end
+
+function drawTips()
+  love.graphics.setColor(255,255,255,255)
+  switchFont(15)
+  local x,y = love.mouse.getPosition()
+  if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
+    love.graphics.printf("Bed", 600, 100, 100)
+  end
+  if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
+    love.graphics.printf("Computer", 600, 100, 100)
+  end
+  if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
+    love.graphics.printf("Outside", 600, 100, 100)
+  end
+  if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
+    love.graphics.printf("Fridge", 600, 100, 100)
+  end
+end
+
+function drawClock()
+  switchFont(40)
+  if math.random(0, 100) == 5 then
+    clockr = math.random(0,255)
+    clockg = math.random(0,255)
+    clockb = math.random(0,255)
+  end
+  love.graphics.setColor(clockr, clockg, clockb, 255)
+  love.graphics.rectangle("fill", 50, 50, 115, 50)
+  love.graphics.setColor(255-clockr,255-clockg,255-clockb,255)
+  love.graphics.printf(numToStr(hours) .. ":" .. numToStr(minutes), 50, 50, 115)
+end
+  
+function drawSpeech()
+  love.graphics.setColor(255,255,255,255)
+  if gamedone < 0 then
+    switchFont(40)
+    love.graphics.printf("SimDare", 480, 50, 200)
+    switchFont(15)
+    love.graphics.printf("Ludum Dare compo simulation game", 100, 500, 300)
+    love.graphics.printf("press [space] to start", 100, 550, 300)
+  elseif gamedone < 1 then
+    switchFont(17)
+    if food == 0 then
+      love.graphics.printf("You died of hunger :(", 200, 550, 500)
+    end
+    if hydration == 0 then
+      love.graphics.printf("You died of dehydration :(", 200, 550, 500)
+    end
+    if sleep == 0 then
+      love.graphics.printf("You fell asleep forever :(", 200, 550, 500)
+    end
+    if timer <= 0 then
+      love.graphics.printf("You didn't make a game in time :(", 200, 550, 500)
+    end
+  else
+    switchFont(40)
+    love.graphics.printf("You made it!", 480, 50, 200)
+    switchFont(15)
+    love.graphics.printf("Congratulations, you finished your Ludum Dare entry on time, and managed not to die in process! Wow! I'm really proud of you! :) :) :)", 200, 550, 500)
+  end
+end
 
 function love.draw()
   local x, y = love.mouse.getPosition()
+  local colorstability = math.min(conscience, food, hydration, (1 - overburn), sleep)*255
   love.graphics.draw(sprites[3], 0, 0)
   if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
     love.graphics.setColor(180, 180, 180, 180)
@@ -227,7 +269,9 @@ function love.draw()
   if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
     love.graphics.draw(door, 335, 1, 0, 4, 4)
     if occupation == 2 then
+      love.graphics.setColor(colorstability,colorstability,colorstability,255)
       love.graphics.draw(sprites[1], 380, 20, 0, 4, 4)
+      love.graphics.setColor(255,255,255,255)
     end
   else
     love.graphics.draw(sprites[6], 335, 1, 0, 4, 4)
@@ -238,7 +282,6 @@ function love.draw()
     love.graphics.setColor(200,200,200,255)
   end
   love.graphics.draw(sprites[4], 220, 300, math.rad(-70), 5)
-  local colorstability = math.min(conscience, food, hydration, (1 - overburn), sleep)*255
   love.graphics.setColor(colorstability,colorstability,colorstability,255)
   if occupation == 3 then
     love.graphics.draw(sprites[1], 270, 200, math.rad(20), 4)
@@ -254,7 +297,11 @@ function love.draw()
   end
   love.graphics.draw(sprites[5], 533, 348, 0, 4, 4)
   love.graphics.setColor(255, 255, 255, 255)
-  gui.core.draw()
+  drawTips()
+  drawNeeds()
+  drawClock()
+  drawSpeech()
+  drawProgress()
 end
 
 function love.keypressed(k, unicode)
@@ -268,7 +315,7 @@ function love.keypressed(k, unicode)
 end
 
 function love.mousereleased(x, y,  button)
-  if gamedone >= 0 then
+  if gamedone > -1 and gamedone < 1 and performGameUpdate then
     if button == "l" then
       if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
 	occupation = 3
@@ -294,8 +341,9 @@ function love.mousereleased(x, y,  button)
 	love.audio.pause(sounds[3])
 	love.audio.play(sounds[4])
       end
-    elseif button == "m" then
-      print(x .. " " .. y)
     end
+  end
+  if button == "m" then
+    print(x .. " " .. y)
   end
 end
