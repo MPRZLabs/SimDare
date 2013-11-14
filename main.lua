@@ -174,7 +174,11 @@ function drawNeeds()
     love.graphics.rectangle("fill", (1-conscience)*100, 325, conscience*100, 50)
     love.graphics.rectangle("fill", overburn*100, 425, (1-overburn)*100, 50)
     love.graphics.rectangle("fill", (1-sleep)*100, 525, sleep*100, 50)
-    love.graphics.setColor(0,0,0,255)
+    if rainbowmode then
+      love.graphics.setColor(clockr, clockg, clockb, 255)
+    else
+      love.graphics.setColor(0,0,0,255)
+    end
     switchFont(18)
     love.graphics.printf("Food", 0, 150, 100, "center")
     love.graphics.printf("Hydration", 0, 250, 100, "center")
@@ -194,7 +198,11 @@ function drawProgress()
 end
 
 function drawTips()
-  love.graphics.setColor(255,255,255,255)
+  if rainbowmode then
+    love.graphics.setColor(1-clockr, 1-clockg, 1-clockb, 255)
+  else
+    love.graphics.setColor(0,0,0,255)
+  end
   switchFont(15)
   local x,y = love.mouse.getPosition()
   if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
@@ -281,7 +289,11 @@ function drawClock()
 end
   
 function drawSpeech()
-  love.graphics.setColor(255,255,255,255)
+  if rainbowmode then
+    love.graphics.setColor(1-clockr, 1-clockg, 1-clockb, 255)
+  else
+    love.graphics.setColor(255,255,255,255)
+  end
   if gamedone < 0 then
     switchFont(40)
     love.graphics.printf("SimDare", 480, 50, 200)
@@ -307,6 +319,7 @@ function drawSpeech()
     love.graphics.printf("You made it!", 480, 50, 200)
     switchFont(15)
     love.graphics.printf("Congratulations, you finished your Ludum Dare entry on time, and managed not to die in process! Wow! I'm really proud of you! :) :) :)", 200, 550, 500)
+    love.graphics.setColor(255,255,255,255)
   end
 end
 
