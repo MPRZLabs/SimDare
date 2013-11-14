@@ -32,6 +32,7 @@ function love.load()
   conscience = 1
   overburn = 0
   sleep = 0.75
+  workmlt = 1
   gamedone = -1
   clockr = 0
   clockg = 0
@@ -114,7 +115,7 @@ function love.update(dt)
 	elseif overburn + 0.01*dt > 1 then
 	  overburn = 1
 	end
-	local stability = math.min(conscience, food, (1 - overburn), sleep)
+	local stability = math.min(conscience, food, (1 - overburn), sleep)*workmlt
 	if gamedone < 1 and gamedone + 0.01*dt*stability <=1 then
 	  gamedone = gamedone + 0.01*dt*stability
 	elseif gamedone + 0.01*dt*stability > 1 then
@@ -306,9 +307,39 @@ function drawSpeech()
   if gamedone < 0 then
     switchFont(40)
     love.graphics.printf("SimDare", 480, 50, 200)
-    switchFont(15)
-    love.graphics.printf("Ludum Dare compo simulation game", 100, 500, 300)
-    love.graphics.printf("press [space] to start", 100, 550, 300)
+    switchFont(9)
+    love.graphics.printf("Ludum Dare simulator", 480, 100, 300)
+    local x, y = love.mouse.getPosition()
+    switchFont(18)
+    if x >= 100 and y >= 530 and x <= 300 and y <= 580 then
+      love.graphics.rectangle("fill", 100, 530, 200, 50)
+      if rainbowmode > 0 then
+	love.graphics.setColor(clockr, clockg, clockb, 255)
+      else
+	love.graphics.setColor(0,0,0,255)
+      end
+      love.graphics.printf("Compo Mode", 100, 530, 200, "center")
+    else
+      love.graphics.rectangle("line", 100, 530, 200, 50)
+      love.graphics.printf("Compo Mode", 100, 530, 200, "center")
+    end
+    if rainbowmode > 0 then
+      love.graphics.setColor(1-clockr, 1-clockg, 1-clockb, 255)
+    else
+      love.graphics.setColor(255,255,255,255)
+    end
+    if x >= 500 and y >= 530 and x <= 700 and y <= 580 then
+      love.graphics.rectangle("fill", 500, 530, 200, 50)
+      if rainbowmode > 0 then
+	love.graphics.setColor(clockr, clockg, clockb, 255)
+      else
+	love.graphics.setColor(0,0,0,255)
+      end
+      love.graphics.printf("Jam Mode", 500, 530, 200, "center")
+    else
+      love.graphics.rectangle("line", 500, 530, 200, 50) 
+      love.graphics.printf("Jam Mode", 500, 530, 200, "center")
+    end
   elseif gamedone < 1 then
     switchFont(17)
     if food == 0 then
@@ -324,7 +355,7 @@ function drawSpeech()
     switchFont(40)
     love.graphics.printf("You made it!", 480, 50, 200)
     switchFont(15)
-    love.graphics.printf("Congratulations, you finished your Ludum Dare entry on time, and managed not to die in process! Wow! I'm really proud of you! :) :) :)", 200, 550, 500)
+    love.graphics.printf("Congratulations, you finished your Ludum Dare entry on time, and managed not to die in process! Now go add some post-compo features!", 200, 550, 500)
     love.graphics.setColor(255,255,255,255)
   end
 end
@@ -392,11 +423,6 @@ function love.keypressed(k)
   if k == "escape" then
     love.event.push('quit')
   end
-  if k == " " and gamedone < 0 then
-    gamedone = 0
-    occupation = 3
-    love.audio.play(sounds[3])
-  end
 end
 
 function love.mousereleased(x, y,  button)
@@ -425,6 +451,22 @@ function love.mousereleased(x, y,  button)
 	love.audio.pause(sounds[2])
 	love.audio.pause(sounds[3])
 	love.audio.play(sounds[4])
+      end
+    end
+  elseif gamedone == -1 then
+    if button == "l" then
+      if x >= 100 and y >= 530 and x <= 300 and y <= 580 then
+	gamedone = 0
+	occupation = 3
+	love.audio.play(sounds[3])
+      end
+      if x >= 500 and y >= 530 and x <= 700 and y <= 580 then
+	timer = 72*60*60
+	hours = 72
+	gamedone = 0
+	occupation = 3
+	workmlt = 2/3
+	love.audio.play(sounds[3])
       end
     end
   end
