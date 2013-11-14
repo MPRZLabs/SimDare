@@ -33,6 +33,7 @@ function love.load()
   overburn = 0
   sleep = 0.75
   workmlt = 1
+  pacemaker = 1
   gamedone = -1
   clockr = 0
   clockg = 0
@@ -52,6 +53,14 @@ function love.load()
   getFont(40)
   love.graphics.setBackgroundColor(255, 255, 255, 255)
   performGameUpdate = true
+end
+
+function keepInPace(pc)
+  pacemaker = pc
+  sounds[1]:setPitch(pc)
+  sounds[2]:setPitch(pc)
+  sounds[3]:setPitch(pc)
+  sounds[4]:setPitch(pc)
 end
 
 function randomizeFortune()
@@ -76,62 +85,62 @@ function love.update(dt)
     
   elseif gamedone < 1 then
     if performGameUpdate then
-      timer = timer - 8*60*dt
+      timer = timer - 8*60*dt*pacemaker
       if timer <= 0 then
 	performGameUpdate = false
       end
-      if sleep > 0.01*dt then
-	sleep = sleep - 0.01*dt
-      elseif sleep < 0.01*dt then
+      if sleep > 0.01*dt*pacemaker then
+	sleep = sleep - 0.01*dt*pacemaker
+      elseif sleep < 0.01*dt*pacemaker then
 	sleep = 0
       end
-      if food > 0.01*dt then
-	food = food - 0.01*dt
-      elseif food < 0.01*dt then
+      if food > 0.01*dt*pacemaker then
+	food = food - 0.01*dt*pacemaker
+      elseif food < 0.01*dt*pacemaker then
 	food = 0
       end
-      if conscience > 0.005*dt then
-	conscience = conscience - 0.005*dt
-      elseif conscience < 0.005*dt then
+      if conscience > 0.005*dt*pacemaker then
+	conscience = conscience - 0.005*dt*pacemaker
+      elseif conscience < 0.005*dt*pacemaker then
 	conscience = 0
       end
       if occupation == 3 then
-	sleep = sleep + 0.03*dt
+	sleep = sleep + 0.03*dt*pacemaker
 	if sleep > 1 then
 	  sleep = 1
 	end
       elseif occupation == 2 then
-	if conscience < 1 and conscience + 0.03*dt <= 1 then
-	  conscience = conscience + 0.03*dt
+	if conscience < 1 and conscience + 0.03*dt*pacemaker <= 1 then
+	  conscience = conscience + 0.03*dt*pacemaker
 	end
-	if overburn > 0 and overburn - 0.03*dt >= 0 then
-	  overburn = overburn - 0.03*dt
-	elseif overburn < 0.03*dt then
+	if overburn > 0 and overburn - 0.03*dt*pacemaker >= 0 then
+	  overburn = overburn - 0.03*dt*pacemaker
+	elseif overburn < 0.03*dt*pacemaker then
 	  overburn = 0
 	end
       elseif occupation == 1 then
-	if overburn < 1 and overburn + 0.01*dt <= 1 then
-	  overburn = overburn + 0.01*dt
-	elseif overburn + 0.01*dt > 1 then
+	if overburn < 1 and overburn + 0.01*dt*pacemaker <= 1 then
+	  overburn = overburn + 0.01*dt*pacemaker
+	elseif overburn + 0.01*dt*pacemaker > 1 then
 	  overburn = 1
 	end
-	local stability = math.min(conscience, food, (1 - overburn), sleep)*workmlt
+	local stability = math.min(conscience, food, (1 - overburn), sleep)*workmlt*pacemaker
 	if gamedone < 1 and gamedone + 0.01*dt*stability <=1 then
 	  gamedone = gamedone + 0.01*dt*stability
 	elseif gamedone + 0.01*dt*stability > 1 then
 	  gamedone = 1
 	end
       elseif occupation == 4 then
-	if food < 1 and food + 0.2*dt <= 1 then
-	  food = food + 0.2*dt
-	elseif food + 0.2*dt > 1 then
+	if food < 1 and food + 0.2*dt*pacemaker <= 1 then
+	  food = food + 0.2*dt*pacemaker
+	elseif food + 0.2*dt*pacemaker > 1 then
 	  food = 1
 	end
       end
       if occupation > 1 then
-	if overburn > 0 and overburn - 0.01*dt >= 0 then
-	  overburn = overburn - 0.01*dt
-	elseif overburn < 0.01*dt then
+	if overburn > 0 and overburn - 0.01*dt*pacemaker >= 0 then
+	  overburn = overburn - 0.01*dt*pacemaker
+	elseif overburn < 0.01*dt*pacemaker then
 	  overburn = 0
 	end
       end
@@ -422,6 +431,15 @@ end
 function love.keypressed(k)
   if k == "escape" then
     love.event.push('quit')
+  end
+  if k == "p" then
+    keepInPace(0.25)
+  end
+end
+
+function love.keyreleased(k)
+  if k == "p" then
+    keepInPace(1)
   end
 end
 
