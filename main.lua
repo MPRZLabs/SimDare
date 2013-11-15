@@ -69,7 +69,6 @@ end
 
 function getFont(size)
   if fonts[size] then
-    
   else
     fonts[size] = love.graphics.newFont(size)
   end
@@ -87,77 +86,73 @@ function love.update(dt)
     if performGameUpdate then
       timer = timer - 8*60*dt*pacemaker
       if timer <= 0 then
-	performGameUpdate = false
+	      performGameUpdate = false
       end
       if sleep > 0.01*dt*pacemaker then
-	sleep = sleep - 0.01*dt*pacemaker
+	      sleep = sleep - 0.01*dt*pacemaker
       elseif sleep < 0.01*dt*pacemaker then
-	sleep = 0
+	      sleep = 0
       end
       if food > 0.01*dt*pacemaker then
-	food = food - 0.01*dt*pacemaker
+	      food = food - 0.01*dt*pacemaker
       elseif food < 0.01*dt*pacemaker then
-	food = 0
-      end
-      if conscience > 0.005*dt*pacemaker then
-	conscience = conscience - 0.005*dt*pacemaker
-      elseif conscience < 0.005*dt*pacemaker then
-	conscience = 0
+	      food = 0
       end
       if occupation == 3 then
-	sleep = sleep + 0.03*dt*pacemaker
-	if sleep > 1 then
-	  sleep = 1
-	end
+	      sleep = sleep + 0.03*dt*pacemaker
+	      if sleep > 1 then
+	        sleep = 1
+	      end
       elseif occupation == 2 then
-	if conscience < 1 and conscience + 0.03*dt*pacemaker <= 1 then
-	  conscience = conscience + 0.03*dt*pacemaker
-	end
-	if overburn > 0 and overburn - 0.03*dt*pacemaker >= 0 then
-	  overburn = overburn - 0.03*dt*pacemaker
-	elseif overburn < 0.03*dt*pacemaker then
-	  overburn = 0
-	end
+	      if conscience < 1 and conscience + 0.03*dt*pacemaker <= 1 then
+	        conscience = conscience + 0.03*dt*pacemaker
+	      end
+	      if overburn > 0 and overburn - 0.03*dt*pacemaker >= 0 then
+	        overburn = overburn - 0.03*dt*pacemaker
+	      elseif overburn < 0.03*dt*pacemaker then
+	        overburn = 0
+	      end
       elseif occupation == 1 then
-	if overburn < 1 and overburn + 0.01*dt*pacemaker <= 1 then
-	  overburn = overburn + 0.01*dt*pacemaker
-	elseif overburn + 0.01*dt*pacemaker > 1 then
-	  overburn = 1
-	end
-	local stability = math.min(conscience, food, (1 - overburn), sleep)*workmlt*pacemaker
-	if gamedone < 1 and gamedone + 0.01*dt*stability <=1 then
-	  gamedone = gamedone + 0.01*dt*stability
-	elseif gamedone + 0.01*dt*stability > 1 then
-	  gamedone = 1
-	end
+	      if overburn < 1 and overburn + 0.01*dt*pacemaker <= 1 then
+	        overburn = overburn + 0.01*dt*pacemaker
+	      elseif overburn + 0.01*dt*pacemaker > 1 then
+	        overburn = 1
+	      end
+	      local stability = math.min(conscience, food, (1 - overburn), sleep)*workmlt*pacemaker
+	      if gamedone < 1 and gamedone + 0.01*dt*stability <=1 then
+	        gamedone = gamedone + 0.01*dt*stability
+	      elseif gamedone + 0.01*dt*stability > 1 then
+	        gamedone = 1
+	      end
       elseif occupation == 4 then
-	if food < 1 and food + 0.2*dt*pacemaker <= 1 then
-	  food = food + 0.2*dt*pacemaker
-	elseif food + 0.2*dt*pacemaker > 1 then
-	  food = 1
-	end
+	      if food < 1 and food + 0.2*dt*pacemaker <= 1 then
+	        food = food + 0.2*dt*pacemaker
+	      elseif food + 0.2*dt*pacemaker > 1 then
+	        food = 1
+	      end
       end
       if occupation > 1 then
-	if overburn > 0 and overburn - 0.01*dt*pacemaker >= 0 then
-	  overburn = overburn - 0.01*dt*pacemaker
-	elseif overburn < 0.01*dt*pacemaker then
-	  overburn = 0
-	end
+	      if overburn > 0 and overburn - 0.01*dt*pacemaker >= 0 then
+	        overburn = overburn - 0.01*dt*pacemaker
+	      elseif overburn < 0.01*dt*pacemaker then
+	        overburn = 0
+	      end
       end
       if gamedone == 1 then
-	performGameUpdate = false
+	      performGameUpdate = false
       end
       hours = math.floor(timer/3600)
       minutes = math.floor((timer%3600)/60)
       if minutes%10 == 0 and (lastminute > minutes or lastminute < minutes) then
-	randomizeFortune()
-	lastminute = minutes
+	      randomizeFortune()
+	      lastminute = minutes
       end
+
     else
       love.audio.stop()
     end
     if food == 0 then
-	performGameUpdate = false
+	    performGameUpdate = false
     end
     if sleep == 0 then
       performGameUpdate = false
@@ -323,9 +318,9 @@ function drawSpeech()
     if x >= 100 and y >= 530 and x <= 300 and y <= 580 then
       love.graphics.rectangle("fill", 100, 530, 200, 50)
       if rainbowmode > 0 then
-	love.graphics.setColor(clockr, clockg, clockb, 255)
+	      love.graphics.setColor(clockr, clockg, clockb, 255)
       else
-	love.graphics.setColor(0,0,0,255)
+	      love.graphics.setColor(0,0,0,255)
       end
       love.graphics.printf("Compo Mode", 100, 530, 200, "center")
     else
@@ -340,9 +335,9 @@ function drawSpeech()
     if x >= 500 and y >= 530 and x <= 700 and y <= 580 then
       love.graphics.rectangle("fill", 500, 530, 200, 50)
       if rainbowmode > 0 then
-	love.graphics.setColor(clockr, clockg, clockb, 255)
+	      love.graphics.setColor(clockr, clockg, clockb, 255)
       else
-	love.graphics.setColor(0,0,0,255)
+	      love.graphics.setColor(0,0,0,255)
       end
       love.graphics.printf("Jam Mode", 500, 530, 200, "center")
     else
@@ -447,44 +442,44 @@ function love.mousereleased(x, y,  button)
   if gamedone > -1 and gamedone < 1 and performGameUpdate then
     if button == "l" then
       if x >= 212 and x <= 311 and y >= 188 and y <= 313 then
-	occupation = 3
-	love.audio.pause(sounds[2])
-	love.audio.play(sounds[3])
-	love.audio.pause(sounds[4])
+	      occupation = 3
+	      love.audio.pause(sounds[2])
+	      love.audio.play(sounds[3])
+	      love.audio.pause(sounds[4])
       end
       if x >= 539 and x <= 602 and y >= 189 and y <= 287 then
-	occupation = 1
-	love.audio.play(sounds[2])
-	love.audio.pause(sounds[3])
-	love.audio.pause(sounds[4])
+	      occupation = 1
+	      love.audio.play(sounds[2])
+	      love.audio.pause(sounds[3])
+	      love.audio.pause(sounds[4])
       end
       if x >= 335 and x <= 420 and y >= 0 and y <= 133 then
-	occupation = 2
-	love.audio.pause(sounds[2])
-	love.audio.pause(sounds[3])
-	love.audio.pause(sounds[4])
+	      occupation = 2
+	      love.audio.pause(sounds[2])
+	      love.audio.pause(sounds[3])
+	      love.audio.pause(sounds[4])
       end
       if x >= 534 and x <= 593 and y >= 351 and y <= 442 then
-	occupation = 4
-	love.audio.pause(sounds[2])
-	love.audio.pause(sounds[3])
-	love.audio.play(sounds[4])
+	      occupation = 4
+	      love.audio.pause(sounds[2])
+	      love.audio.pause(sounds[3])
+	      love.audio.play(sounds[4])
       end
     end
   elseif gamedone == -1 then
     if button == "l" then
       if x >= 100 and y >= 530 and x <= 300 and y <= 580 then
-	gamedone = 0
-	occupation = 3
-	love.audio.play(sounds[3])
+	      gamedone = 0
+	      occupation = 3
+	      love.audio.play(sounds[3])
       end
       if x >= 500 and y >= 530 and x <= 700 and y <= 580 then
-	timer = 72*60*60
-	hours = 72
-	gamedone = 0
-	occupation = 3
-	workmlt = 2/3
-	love.audio.play(sounds[3])
+	      timer = 72*60*60
+	      hours = 72
+	      gamedone = 0
+	      occupation = 3
+	      workmlt = 2/3
+	      love.audio.play(sounds[3])
       end
     end
   end
