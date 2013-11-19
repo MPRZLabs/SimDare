@@ -1,4 +1,8 @@
+s = require 'engine'
+s:init("simdare-ahn","0.4.3","SimDare","Michcioperz")
 function love.load()
+  s.l:inf("main.load","Starting to load the game")
+  s.l:inf("main.load","Loading graphics assets")
   sprites = {
     love.graphics.newImage("human.png"),
     love.graphics.newImage("computer.png"),
@@ -10,18 +14,22 @@ function love.load()
     love.graphics.newImage("dooron.png")
   }
   rainbowsy = love.image.newImageData("rainbow.png")
+  s.l:inf("main.load","Graphics assets loaded")
+  s.l:inf("main.load","Loading sound assets")
   sounds = {
     love.audio.newSource("track.ogg","stream"),
     love.audio.newSource("keys.ogg", "stream"),
     love.audio.newSource("sleep.ogg", "stream"),
     love.audio.newSource("food.ogg", "stream")
   }
-  fonts = { }
   sounds[1]:setLooping(true)
   sounds[1]:setVolume(0.3)
   sounds[2]:setLooping(true)
   sounds[3]:setLooping(true)
   sounds[4]:setLooping(true)
+  s.l:inf("main.load","Sound assets loaded")
+  s.l:inf("main.load","Setting up important stuff")
+  fonts = {}
   love.audio.play(sounds[1])
   occupation = 0
   timer = 48*60*60
@@ -52,6 +60,7 @@ function love.load()
   getFont(18)
   getFont(40)
   love.graphics.setBackgroundColor(255, 255, 255, 255)
+  s.l:inf("main.load","Loading complete, enabling the main loop")
   performGameUpdate = true
 end
 
