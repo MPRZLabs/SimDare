@@ -376,7 +376,8 @@ function drawSpeech()
 end
 
 function love.draw()
-	love.graphics.setBackgroundColor(255,255,255)
+	love.graphics.setColor(255,255,255)
+	love.graphics.rectangle("fill", 0, 0, 800, 600)
 	local x, y = love.mouse.getPosition()
 	local colorstability = math.min(conscience, food, (1 - overburn), sleep)*255
 	if rainbowmode > 0 then
