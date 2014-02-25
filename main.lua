@@ -376,6 +376,7 @@ function drawSpeech()
 end
 
 function love.draw()
+	love.graphics.setBackgroundColor(255,255,255)
 	local x, y = love.mouse.getPosition()
 	local colorstability = math.min(conscience, food, (1 - overburn), sleep)*255
 	if rainbowmode > 0 then
@@ -501,5 +502,11 @@ function love.mousereleased(x, y,	button)
 		else
 			rainbowmode = 0
 		end
+	end
+	if button == "r" then
+		love.graphics.setCanvas(love.graphics.newCanvas())
+		love.draw()
+		love.graphics.getCanvas():getImageData():encode("screenshot"..os.time()..".png")
+		love.graphics.setCanvas()
 	end
 end
